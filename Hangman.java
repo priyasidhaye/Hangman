@@ -10,10 +10,12 @@ public class Hangman {
     private boolean isGameWon;
     private boolean isGameLost;
     private boolean invalidInputWarning;
+    private DisplayHangman display;
     
     public Hangman() {
         this.totalGuesses = 10;
         this.allGuessedLetters = new ArrayList<Letter>(26);
+        this.display = new DisplayHangman();
 
         // Read a random word from file. Assign default word if read fails.
         try {
@@ -35,6 +37,7 @@ public class Hangman {
     }
 
     private void displayGame() {
+        this.display.displayHangman(this.numberOfIncorrectGuesses);
         System.out.println("Number of guesses left : " + (this.totalGuesses - this.numberOfIncorrectGuesses));
         for (int i=0; i<word.length(); i++) {
             if(this.letters[i].getIsGuessed()) {
@@ -136,8 +139,11 @@ public class Hangman {
         }
         //Output if game won or lost
         if (this.isGameLost) {
+            this.display.displayHangman(10);
             System.out.println("You lost!");
+            System.out.println("Word was : " + this.word);
         } else if (this.isGameWon) {
+            this.display.displayHangman(-1);
             System.out.println("Congratulations! Game won.");
         }
     }
