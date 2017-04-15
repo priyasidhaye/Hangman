@@ -2,14 +2,13 @@ import java.util.*;
 import java.io.*;
 
 public class Hangman {
-    private Letter[] letters;
     private String word;
+    private Letter[] letters;
     private ArrayList<Letter> allGuessedLetters;
     private int numberOfIncorrectGuesses;
     private int totalGuesses;
     private boolean isGameWon;
     private boolean isGameLost;
-    private boolean invalidInputWarning;
     private DisplayHangman display;
     
     public Hangman() {
@@ -38,7 +37,6 @@ public class Hangman {
 
     private void displayGame() {
         this.display.displayHangman(this.numberOfIncorrectGuesses);
-        System.out.println("Number of guesses left : " + (this.totalGuesses - this.numberOfIncorrectGuesses));
         for (int i=0; i<word.length(); i++) {
             if(this.letters[i].getIsGuessed()) {
                 System.out.print(letters[i].getValue());
@@ -126,9 +124,9 @@ public class Hangman {
         while(!this.isGameWon && !this.isGameLost) {
             // Output current state of hangman
             this.displayGame();
-
+            System.out.println("Enter guess(Letter or Word) : ");
             // Ask for input letter or word
-            String input = in.next();
+            String input = in.next().trim().toLowerCase();
             boolean valid = this.isValidInput(input);
             if (valid) {
                 input = input.toLowerCase();
