@@ -28,17 +28,21 @@ public class Letter {
     public static void testInitialization() {
         /* Test creation of Letter object */
         Letter l = new Letter('a');
-        if (l.getValue() != 'a') {
-            System.out.println("Test failed.");
-        } else {
-            System.out.println("Object creation test passed.");
+        try {
+            assert l.getValue() == 'a';
+        } catch(AssertionError ae) {
+            System.out.println("Letter Initialization test failed.");
+            return;
         }
-
+        System.out.println("Object creation test passed.");
+        
         //Test isGuessed property initialized to correct value
-        if (l.getIsGuessed()) {
-            System.out.println("Test Failed.");
-        } else {
-            System.out.println("Initialize isGuessed property passed.");
+        try {
+            assert !l.getIsGuessed();
+        } catch (AssertionError ae) {
+            System.out.println("Letter not initialized properly");
+            return;
         }
+        System.out.println("Initialize isGuessed property passed.");
     }
 }

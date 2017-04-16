@@ -153,7 +153,7 @@ public class Hangman {
         while(!this.isGameWon && !this.isGameLost) {
             // Output current state of hangman
             this.displayGame();
-            System.out.println("Enter guess(Letter or Word) : ");
+            System.out.print("Enter guess(Letter or Word) : ");
             // Ask for input letter or word
             String input = in.next().trim().toLowerCase();
             boolean valid = this.isValidInput(input);
@@ -178,32 +178,39 @@ public class Hangman {
     public static void testInitialization() {
         /* Test Initialization */
         Hangman game = new Hangman();
-        if (game.word != null) {
-            System.out.println("Game initialized");
-        } else {
-            System.out.println("Game initialization failed");
+        try{
+            assert (game.word != null);
+        } catch (AssertionError ae) {
+            System.out.println("Initialization test failed.");
+            return;
         }
+        System.out.println("Initialization test passed.");
     }
 
     public static void testValidInput() {
         /* Test valid input */
         Hangman game = new Hangman();
-        if (!game.isValidInput("45")) {
-            System.out.println("Invalid input test passed");
-        } else {
-            System.out.println("Invalid input test failed");
+        try{
+            assert (!game.isValidInput("45"));
+        } catch (AssertionError ae) {
+            System.out.println("Invalid input check failed");
+            return;
         }
+        System.out.println("Invalid input test passed");
     }
 
     public static void testAlreadyGuessed() {
         /* Test if input is already guessed */
         Hangman game = new Hangman();
         game.allGuessedLetters.add(new Letter('a'));
-        if (game.isAlreadyGuessed('a') && !game.isAlreadyGuessed('b')) {
-            System.out.println("Previously guessed test passed.");
-        } else {
+        try {
+            assert (game.isAlreadyGuessed('a'));
+            assert (!game.isAlreadyGuessed('b'));
+        } catch (AssertionError ae) {
             System.out.println("Previously guessed test failed.");
+            return;
         }
+        System.out.println("Previously guessed test passed");
     }
 
     public static void testDetermineOutcome() {
@@ -211,13 +218,17 @@ public class Hangman {
         Hangman game1 = new Hangman("test");
         game1.determineOutcome("t");
         game1.determineOutcome("e");
-        if(game1.isGameWon) {
+        try {
+            assert (!game1.isGameWon);
+        } catch (AssertionError ae) {
             System.out.println("Game test failed");
             return;
         }
         game1.determineOutcome("s");
         game1.determineOutcome("t");
-        if(!game1.isGameWon) {
+        try {
+            assert (game1.isGameWon);
+        } catch (AssertionError ae) {
             System.out.println("Game test failed");
             return;
         }
@@ -226,10 +237,12 @@ public class Hangman {
         for(int i=0; i<11; i++) {
             game2.determineOutcome(""+(c+1));
         }
-        if (!game2.isGameLost) {
+        try {
+            assert(game2.isGameLost);
+        } catch (AssertionError ae) {
             System.out.println("Game test failed");
             return;
         }
-        System.out.println("Tests for game scenarios passed.");
+        System.out.println("Game test passed");
     }
 }
