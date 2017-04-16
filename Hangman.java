@@ -1,3 +1,4 @@
+/* This class implements the functionality of the Hangman game. */
 import java.util.*;
 import java.io.*;
 
@@ -6,15 +7,15 @@ public class Hangman {
     private Letter[] letters;
     private ArrayList<Letter> allGuessedLetters;
     private int numberOfIncorrectGuesses;
+    private int numberOfCorrectGuesses;
     private int totalGuesses;
     private boolean isGameWon;
     private boolean isGameLost;
-    private DisplayHangman display;
     
     public Hangman() {
+        /* Constructor for Hangman class */
         this.totalGuesses = 10;
         this.allGuessedLetters = new ArrayList<Letter>(26);
-        this.display = new DisplayHangman();
 
         // Read a random word from file. Assign default word if read fails.
         try {
@@ -26,7 +27,7 @@ public class Hangman {
                 this.word = bufferedReader.readLine().trim();
             }
         } catch (Exception e) {
-            //Default word
+            //Default word in case file read fails.
             this.word = "codswallop";
         }
         this.letters = new Letter[this.word.length()];
@@ -35,8 +36,20 @@ public class Hangman {
         } 
     }
 
+    public Hangman(String word) {
+        /* Constructor for test methods. */
+        this.totalGuesses = 10;
+        this.allGuessedLetters = new ArrayList<Letter>(26);
+        this.word = word;
+        this.letters = new Letter[this.word.length()];
+        for(int i=0; i<this.word.length(); i++) {
+            letters[i] = new Letter(this.word.charAt(i));
+        }
+    }
+
     private void displayGame() {
-        this.display.displayHangman(this.numberOfIncorrectGuesses);
+        /* Method to display current state of game. */
+        DisplayHangman.displayHangman(this.numberOfIncorrectGuesses);
         for (int i=0; i<word.length(); i++) {
             if(this.letters[i].getIsGuessed()) {
                 System.out.print(letters[i].getValue());
@@ -49,6 +62,7 @@ public class Hangman {
     }
 
     private boolean isAlreadyGuessed(char inputLetter) {
+        /* Method to check whether the guessed letter has previously been guessed. */
         boolean alreadyGuessed = false;
         for (Letter l : this.allGuessedLetters) {
             if (l.getValue() == inputLetter) {
@@ -72,8 +86,9 @@ public class Hangman {
     }
 
     private void determineOutcome(String input) {
+        /* Method to determine how input changes state of game */
         // check if word or letter
-        if (input.length() > 1) {
+        if ((input != null) && (input.length() > 1)) {
             if (input.equals(this.word)) {
                 // if word check if guess is correct-if yes game won
                 this.isGameWon = true;
@@ -85,7 +100,7 @@ public class Hangman {
                 }
             }
             return;
-        } else if(input.length() == 1) {
+        } else if((input != null) && (input.length() == 1)) {
             char inputLetter = input.charAt(0);
             boolean guessed = this.isAlreadyGuessed(inputLetter);
             if (guessed) {
@@ -103,9 +118,15 @@ public class Hangman {
                     if (inputLetter == this.letters[i].getValue()) {
                         letterInWord = true;
                         this.letters[i].setIsGuessed();
+                        this.numberOfCorrectGuesses++;
                     }
                 }
-                if (!letterInWord) {
+                if (letterInWord) {
+                    // If all letters guessed game won
+                    if (this.numberOfCorrectGuesses == this.letters.length) {
+                        this.isGameWon = true;
+                    }
+                } else {
                     this.numberOfIncorrectGuesses++;
                     if (this.numberOfIncorrectGuesses == this.totalGuesses) {
                         this.isGameLost = true;
@@ -116,10 +137,18 @@ public class Hangman {
     }
 
     private boolean isValidInput(String input) {
-        return input.matches("[a-zA-Z]+");
+        /* Method to check if input is valid */
+        boolean result;
+        if (input != null) {
+            result = input.matches("[a-zA-Z]+");
+        } else {
+            result = false;
+        }
+        return result;
     }
 
     public void playGame() {
+        /* Method to play game till it wins or loses. */
         Scanner in = new Scanner(System.in);        
         while(!this.isGameWon && !this.isGameLost) {
             // Output current state of hangman
@@ -137,30 +166,70 @@ public class Hangman {
         }
         //Output if game won or lost
         if (this.isGameLost) {
-            this.display.displayHangman(10);
+            DisplayHangman.displayHangman(10);
             System.out.println("You lost!");
             System.out.println("Word was : " + this.word);
         } else if (this.isGameWon) {
-            this.display.displayHangman(-1);
+            DisplayHangman.displayHangman(-1);
             System.out.println("Congratulations! Game won.");
         }
     }
 
-    public static void main(String args[]) {
+    public static void testInitialization() {
+        /* Test Initialization */
         Hangman game = new Hangman();
-        
-        // Test Initialization
         if (game.word != null) {
             System.out.println("Game initialized");
         } else {
             System.out.println("Game initialization failed");
         }
+    }
 
-        // Test valid input
+    public static void testValidInput() {
+        /* Test valid input */
+        Hangman game = new Hangman();
         if (!game.isValidInput("45")) {
             System.out.println("Invalid input test passed");
         } else {
             System.out.println("Invalid input test failed");
         }
+    }
+
+    public static void testAlreadyGuessed() {
+        /* Test if input is already guessed */
+        Hangman game = new Hangman();
+        game.allGuessedLetters.add(new Letter('a'));
+        if (game.isAlreadyGuessed('a') && !game.isAlreadyGuessed('b')) {
+            System.out.println("Previously guessed test passed.");
+        } else {
+            System.out.println("Previously guessed test failed.");
+        }
+    }
+
+    public static void testDetermineOutcome() {
+        /* Test determineOutcome method */
+        Hangman game1 = new Hangman("test");
+        game1.determineOutcome("t");
+        game1.determineOutcome("e");
+        if(game1.isGameWon) {
+            System.out.println("Game test failed");
+            return;
+        }
+        game1.determineOutcome("s");
+        game1.determineOutcome("t");
+        if(!game1.isGameWon) {
+            System.out.println("Game test failed");
+            return;
+        }
+        Hangman game2 = new Hangman("test");
+        char c = 'a';
+        for(int i=0; i<11; i++) {
+            game2.determineOutcome(""+(c+1));
+        }
+        if (!game2.isGameLost) {
+            System.out.println("Game test failed");
+            return;
+        }
+        System.out.println("Tests for game scenarios passed.");
     }
 }

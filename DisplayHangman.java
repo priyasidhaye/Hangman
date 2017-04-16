@@ -1,5 +1,6 @@
+/* This class displays the ASCII hangman based on number of incorrectly guessed letters.*/
 public class DisplayHangman {
-    public void displayHangman(int numberOfWrongGuesses) {
+    public static void displayHangman(int numberOfWrongGuesses) {
         switch (numberOfWrongGuesses) {
             case 0:
                 System.out.println("|--------|");

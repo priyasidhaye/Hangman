@@ -1,8 +1,10 @@
+/* This class is the letter class */
 public class Letter {
     private char value;
     private boolean isGuessed;
 
     public Letter(char value) {
+        /* Constructor */
         this.value = value;
         this.isGuessed = false;
     }
@@ -11,7 +13,6 @@ public class Letter {
         return this.value;
     }
 
-    //This won't be needed
     public void setValue(char value) {
         this.value = value;
     }
@@ -24,8 +25,8 @@ public class Letter {
         this.isGuessed = true;
     }
 
-    public static void main(String args[]) {
-        //Test creation of Letter object
+    public static void testInitialization() {
+        /* Test creation of Letter object */
         Letter l = new Letter('a');
         if (l.getValue() != 'a') {
             System.out.println("Test failed.");
@@ -38,14 +39,6 @@ public class Letter {
             System.out.println("Test Failed.");
         } else {
             System.out.println("Initialize isGuessed property passed.");
-        }
-
-        //Test setting isGuessed property.
-        l.setIsGuessed();
-        if (!l.getIsGuessed()) {
-            System.out.println("Test Failed");
-        } else {
-            System.out.println("Test to set isGuessed passed.");
         }
     }
 }
